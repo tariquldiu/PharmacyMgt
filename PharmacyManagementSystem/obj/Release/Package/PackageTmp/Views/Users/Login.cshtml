@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+<script src="~/Scripts/Controller/Users.js"></script>
+@section style
+    {
+    <style>
+        label.error {
+            color: red;
+            font-style: italic;
+            display: inline;
+        }
+    </style>
+
+}
+
+<div ng-app="myApp">
+    <div ng-controller="Users">
+        <h3 style="font-size: 25px; text-align:center;"><b>Friends Pharma</b></h3>
+        <div class="lock">
+            <div class="login-wrap">
+                <div class="metro single-size purple">
+                    <div class="locked">
+                        <img style="height: 115px; padding-top:5px;" src="~/logo-icon.png"/>
+                        <span>Friends Pharma</span>
+                    </div>
+                </div>
+                <div class="metro double-size green">
+                    <div class="input-append lock-input">
+                        <input type="text" class="" id="exampleInputUsername" ng-keypress="SetPassFocus($event);" ng-model="User.UserName" placeholder="Username">
+                    </div>
+                </div>
+                <div class="metro double-size yellow">
+                    <div class="input-append lock-input">
+                        <input type="password" id="exampleInputPassword" ng-keypress="SetLoginFocus($event);" class="" ng-model="User.Password" placeholder="Password">
+                    </div>
+                </div>
+                <div class="metro single-size terques login">
+                    <button type="submit" id="btnLogin" ng-click="Login();" ng-disabled="!User.UserName || !User.Password" class="btn login-btn">
+                        Login
+                        <i class=" icon-long-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="login-footer">
+                    <div class="remember-hint pull-left" style="color: green;">
+                        <input type="checkbox" id=""> Remember Me
+                    </div>
+                    <div class="forgot-hint pull-right">
+                        <a id="forget-password" style="color: red;" href="javascript:;">Forgot Password?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

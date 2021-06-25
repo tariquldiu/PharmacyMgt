@@ -1,0 +1,141 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_PharmacyLayout.cshtml";
+}
+<script src="~/Scripts/Controller/Costs.js"></script>
+
+@section style
+    {
+    <style>
+        label.error {
+            color: red;
+            font-style: italic;
+            display: inline;
+        }
+
+        .divIcon {
+            display: flex;
+            align-items: center;
+            position: relative;
+            display: inline;
+        }
+
+        .dtlistIcon {
+            position: absolute;
+            padding: 10px;
+            font-size: 11px;
+            min-width: 40px;
+            right: -32.5px;
+        }
+        /*.sortable-handler {
+            touch-action: none;
+        }*/
+        /*input::-webkit-calendar-picker-indicator {
+            display: none;
+        }*/
+    </style>
+
+}
+<br />
+<div ng-app="myApp">
+    <div ng-controller="Costs">
+        <div>
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green">
+                <div class="widget-title">
+                    <h4><i class="icon-reorder"></i>  Add Cost </h4>
+                    <span class="tools">
+                        <a href="javascript:;" class="icon-chevron-down"></a>
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <form>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <select ng-model="ddlCostType" id="CostType" name="CostType" class="input-xlarge span12" ng-options="costType.CostType for costType in CostTypeList track by costType.CostType" ng-change="SetCostTypeInfo(ddlCostType); Cost.CostType = ddlCostType.CostType;" title="Cost Type" data-toggle="tooltip">
+                                            <option value="" label="Select Cost Type" hidden></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="number" class="input-block-level" ng-model="Cost.Amount" placeholder="Amount" id="Amount" name="Amount" title="Amount" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Cost.CostDescription" placeholder="Cost Description" name="" title="Cost Description" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="date" class="input-block-level" ng-model="Cost.CostDate" title="Cost Date" data-toggle="tooltip" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+
+        <div>
+            <button class="btn btn-warning" ng-click="AddCost();" ng-disabled="!ddlCostType || !Cost.CostDescription || !Cost.Amount || !Cost.CostDate"><i class="icon-plus icon-white"></i> {{btnAdd}}</button>
+            <button class="btn btn-info" ng-click="ResetForm();"><i class="icon-ban-circle icon-white"></i> Reset</button>
+            <button class="btn btn-default" ng-click="RedirectToList();"><i class="icon-list icon-white"></i> List</button>
+        </div>
+        <br />
+        <div>
+            <!-- BEGIN BASIC PORTLET-->
+            <div class="widget green">
+                <div class="widget-title">
+                    <h4><i class="icon-reorder"></i> Added Cost</h4>
+
+                </div>
+                <div class="widget-body">
+                    <table class="table table-hover" id="productList">
+                        <thead>
+                            <tr>
+                                <th>Cost Type</th>
+                                <th>Description</th>
+                                <th>Cost Date</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="cost in CostListTemp">
+                                <td>{{cost.CostType}}</td>
+                                <td>{{cost.CostDescription}}</td>
+                                <td>{{cost.CostDate | date :  'MM/dd/yyyy'}}</td>
+                                <td>{{cost.Amount}}</td>
+                                <td>
+                                    <button class="btn btn-small btn-danger" ng-click="RemoveCost(cost);" type="button">Remove</button>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END BASIC PORTLET-->
+        </div>
+        <button class="btn btn-warning" ng-click="SaveCost();" ng-disabled="!CostListTemp.length"><i class="icon-save icon-white"></i> Submit</button>
+        <button class="btn btn-danger" ng-click="RedirectToList();"><i class="icon-remove icon-white"></i> Cancel</button>
+    </div>
+</div>

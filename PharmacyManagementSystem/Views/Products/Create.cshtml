@@ -1,0 +1,313 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_PharmacyLayout.cshtml";
+}
+<script src="~/Scripts/Controller/Products.js"></script>
+
+@section style
+    {
+    <style>
+        label.error {
+            color: red;
+            font-style: italic;
+            display: inline;
+        }
+
+        .divIcon {
+            display: flex;
+            align-items: center;
+            position: relative;
+            display: inline;
+        }
+
+        .dtlistIcon {
+            position: absolute;
+            padding: 10px;
+            font-size: 11px;
+            min-width: 40px;
+            right: -32.5px;
+        }
+
+        /*input::-webkit-calendar-picker-indicator {
+            display: none;
+        }*/
+    </style>
+}
+<br />
+<div ng-app="myApp">
+    <div ng-controller="Products">
+        <div>
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green">
+                <div class="widget-title">
+                    <h4><i class="icon-reorder"></i>Add Product </h4>
+                    <span class="tools">
+                        <a href="javascript:;" class="icon-chevron-down"></a>
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <form name="productEntryForm">
+                        <div class="row-fluid">
+
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Product.ProductName" placeholder="Product Name" name="ProductName" id="ProductName" title="Product Name" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls" style="width:85%; display: inline-block;">
+                                        <select ng-model="ddlBrand" id="BrandId" name="BrandId" class="input-xlarge span12" ng-options="brand.BrandName for brand in BrandList track by brand.BrandId " ng-change="Product.BrandId = ddlBrand.BrandId; Product.BrandName = ddlBrand.BrandName;" title="Brand" data-toggle="tooltip">
+                                            <option value="" label="Select Brand" hidden></option>
+                                        </select>
+                                    </div>
+                                    <button style="margin-left: 0px;" class="btn btn-success  span2" data-toggle="modal" data-target="#brandModal"><i class="icon-plus icon-white"></i></button>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div class="divIcon">
+                                            <input list="groups" name="GroupName" ng-model="Product.GroupName" ng-change="GetGroupId()" class="input-xlarge span10" placeholder="Select Group" id="GroupName" style="border-color: #dcd7d8; border-width: 1px;" title="Group" data-toggle="tooltip">
+                                            <i class="icon-chevron-down dtlistIcon"></i>
+                                            <datalist id="groups">
+                                                <option ng-repeat="group in GroupList" data-xyz="{{group.GroupId}}" value="{{group.GroupName}}"></option>
+                                            </datalist>
+                                        </div>
+                                        <button style="margin-left: 0px;" class="btn btn-success  span2" data-toggle="modal" data-target="#groupModal"><i class="icon-plus icon-white"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls" style="width:85%; display: inline-block;">
+                                        <select ng-model="ddlCategory" id="CategoryId" name="CategoryId" class="input-xlarge span12" ng-options="category.CategoryName for category in CategoryList track by category.CategoryId " ng-change="Product.CategoryId = ddlCategory.CategoryId; Product.CategoryName = ddlCategory.CategoryName" title="Category" data-toggle="tooltip">
+                                            <option value="" label="Select Category" hidden></option>
+                                        </select>
+                                    </div>
+                                    <button style="margin-left: 0px;" class="btn btn-success  span2" data-toggle="modal" data-target="#categoryModal"><i class="icon-plus icon-white"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls" style="width:85%; display: inline-block;">
+                                        <select ng-model="ddlType" id="TypeId" name="TypeId" class="input-xlarge span12" ng-options="type.TypeName for type in ProductTypeList track by type.TypeId " ng-change="Product.TypeId = ddlType.TypeId; Product.TypeName = ddlType.TypeName" title="Type" data-toggle="tooltip">
+                                            <option value="" label="Select Type" hidden></option>
+                                        </select>
+                                    </div>
+                                    <button style="margin-left: 0px;" class="btn btn-success  span2" data-toggle="modal" data-target="#typeModal"><i class="icon-plus icon-white"></i></button>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="date" class="input-block-level" ng-model="Product.AddedDate" id="AddedDate" name="AddedDate" title="Added Date" data-toggle="tooltip" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+        <div>
+            <button class="btn btn-warning" ng-click="AddProduct();" ng-disabled="!Product.ProductName || !ddlBrand || !ddlType || !Product.AddedDate || !Product.GroupName"><i class="icon-plus icon-white"></i> {{btnAdd}} </button>
+            <button class="btn btn-info" ng-click="ResetForm();"><i class="icon-ban-circle icon-white"></i> Reset</button>
+            <button class="btn btn-default" ng-click="RedirectToList();"><i class="icon-list icon-white"></i> List</button>
+        </div>
+        <br />
+        <div>
+            <!-- BEGIN BASIC PORTLET-->
+            <div class="widget green">
+                <div class="widget-title">
+                    <h4><i class="icon-reorder"></i> Added Product</h4>
+
+                </div>
+                <div class="widget-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Brand</th>
+                                <th>Group</th>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th>Added Date</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="product in ProductListTemp">
+                                <td>{{product.ProductName}}</td>
+                                <td>{{product.BrandName}}</td>
+                                <td>{{product.GroupName}}</td>
+                                <td>{{product.CategoryName}}</td>
+                                <td>{{product.TypeName}}</td>
+                                <td>{{product.AddedDate | date :  'MM/dd/yyyy'}}</td>
+                                <td>
+                                    <button class="btn btn-small btn-danger" ng-click="RemoveProduct(product);" type="button">Remove</button>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END BASIC PORTLET-->
+        </div>
+        <button class="btn btn-warning" ng-disabled="!ProductListTemp.length" ng-click="SaveProduct();"><i class="icon-save icon-white"></i> Submit</button>
+        <button class="btn btn-danger" ng-click="RedirectToList();"><i class="icon-remove icon-white"></i> Cancel</button>
+
+        <div id="groupModal" class="modal fade" ng-model="groupModal" role="dialog">
+            <div class="modal-dialog modal-xl">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header text-center" style=" background-color: #74B749;color:white;">
+                        <button type="button" class="close" style="color:red;" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title bold">Add Group</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" name="GroupName" class="input-block-level" ng-model="Group.GroupName" placeholder="Group Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" name="Description" class="input-block-level" ng-model="Group.Description" placeholder="Description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" ng-click="SaveGroup()" ng-disabled="!Group.GroupName" data-dismiss="modal">Submit</button>
+                        <button type="button" class="btn btn-danger" ng-click="ResetGroup()" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div id="brandModal" class="modal fade" ng-model="brandModal" role="dialog">
+            <div class="modal-dialog modal-xl">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header text-center" style=" background-color: #74B749;color:white;">
+                        <button type="button" class="close" style="color:red;" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title bold">Add Brand</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" name="BrandName" class="input-block-level" ng-model="Brand.BrandName" placeholder="Brand Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" name="Description" class="input-block-level" ng-model="Brand.Description" placeholder="Description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" ng-click="SaveBrand()" ng-disabled="!Brand.BrandName" data-dismiss="modal">Submit</button>
+                        <button type="button" class="btn btn-danger" ng-click="ResetBrand()" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="typeModal" class="modal fade" ng-model="typeModal" role="dialog">
+            <div class="modal-dialog modal-xl">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header text-center" style=" background-color: #74B749;color:white;">
+                        <button type="button" class="close" style="color:red;" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title bold">Add Type</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" name="TypeName" class="input-block-level" ng-model="Type.TypeName" placeholder="Type Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" name="Description" class="input-block-level" ng-model="Type.Description" placeholder="Description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" ng-click="SaveType()" ng-disabled="!Type.TypeName" data-dismiss="modal">Submit</button>
+                        <button type="button" class="btn btn-danger" ng-click="ResetType()" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div id="categoryModal" class="modal fade" ng-model="categoryModal" role="dialog">
+            <div class="modal-dialog modal-xl">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header text-center" style=" background-color: #74B749;color:white;">
+                        <button type="button" class="close" style="color:red;" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title bold">Add Category</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" name="CategoryName" class="input-block-level" ng-model="Category.CategoryName" placeholder="Category Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" name="Description" class="input-block-level" ng-model="Category.Description" placeholder="Description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" ng-click="SaveCategory()" ng-disabled="!Category.CategoryName" data-dismiss="modal">Submit</button>
+                        <button type="button" class="btn btn-danger" ng-click="ResetCategory()" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+

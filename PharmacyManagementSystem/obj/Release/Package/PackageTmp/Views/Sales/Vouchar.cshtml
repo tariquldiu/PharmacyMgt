@@ -1,0 +1,176 @@
+﻿@model IEnumerable<PharmacyManagementSystem.Models.Sale>
+@{
+    Layout = null;
+}
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="~/Scripts/angular.js"></script>
+<script src="~/Scripts/angular-cookies.js"></script>
+<script src="~/Scripts/Controller/Vouchars.js"></script>
+
+<style>
+    .logo-img {
+        width: 200px;
+        height: 200px;
+        float: right;
+      
+    }
+
+    .sortable-handler {
+        touch-action: none;
+    }
+
+    .company-Info h2 {
+        font-weight: bold;
+    }
+</style>
+
+<div ng-app="myApp">
+    <div ng-controller="Vouchars">
+        <div class="container">
+            <br />
+            <div class="hidden-print">
+                <button class="btn btn-primary btn-sm" onclick="Print();">Print</button>
+            </div>
+            <div style="text-align: center;">
+                <span style="font-size: 28px;font-weight: bold;"><u>Invoice</u></span>
+            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="company-Info" style="width: 70%;">
+                                                <h3>Friends Pharma</h3>
+                                                <p>Holding no-349, Humayan plaza, Modinabag, Rayerbag, kadamtali, Dhaka-1362</p>
+                                                <p>Phone: +8801670873116</p>
+                                                <p>Email: friendspharma349@gmail.com</p>
+                                                <p>Web: www.friendspharma.com</p>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <img class="logo-img" src="~/Image/logo.png" />
+                                            </div>
+                                           
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <hr />
+                                                <table>
+                                                    <tbody style="font-size:15px;">
+                                                        <tr>
+                                                            <td>
+                                                                <p><b>Invoice No: </b>{{SaleList[0].BillNo}}</p>
+                                                            </td>
+                                                            <td style="width:10px;"></td>
+                                                            <td></td>
+                                                            <td>
+                                                                <p> <b>Invoice Date: </b>{{SaleList[0].SaleDate}}</p>
+
+                                                            </td>
+                                                            <td style="width:10px;"></td>
+                                                            <td>
+                                                                <p> <b>Printed Time: </b>{{printedTime}}</p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr style="font-size:15px;">
+                                        <td>
+                                            <hr />
+                                            <p><b>Customer Name: </b>{{SaleList[0].CustomerName}}</p>
+                                            <p><b>Address: </b>{{SaleList[0].SaleFor}}</p>
+                                            <p><b>Contact: </b>{{SaleList[0].CustomerContact}}</p>
+
+                                            <hr />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" style="font-size:15px;">
+                                <thead>
+                                    <tr>
+                                        <th style="width:5%;" class="text-center">S/L</th>
+                                        <th class="text-center">Product Name</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Unit Price</th>
+                                        <th class="text-center">Discount</th>
+                                        <th class="text-center">Amount</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="sale in SaleList" ng-if="$index+1 <= ItemSaleCount">
+                                        <td style="width:5%;" class="text-center">{{$index + 1}}</td>
+                                        <td class="text-center">{{sale.ProductName}}</td>
+                                        <td class="text-center">{{sale.Quantity}}</td>
+                                        <td class="text-center">{{sale.UnitPrice}}</td>
+                                        <td class="text-center">{{sale.Discount}} {{sale.DiscountType}}</td>
+                                        <td class="text-center">{{sale.Amount}}{{GetTotalAmountForVouchar(sale, $index)}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:none;"></td>
+                                        <td style="border:none;"></td>
+                                        <td style="border:none;"></td>
+                                        <td style="border:none;"></td>
+                                        <td style="border:none; text-align: right;"><b>Total Amount:</b></td>
+                                        <td class="text-center"><b>{{totalAmountVoucharFix}} Taka</b></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr style="font-size:15px;">
+                        <td>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <br />
+                                    <p>......................</p>
+                                    <p><b>Signature</b></p>
+                                </div>
+                                <div class="col-md-3">
+
+                                </div>
+                                <div class="col-md-3">
+
+                                </div>
+                                <div class="col-md-3">
+                                   
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="position: fixed; right: 80px; bottom: 5px; font-size:13px;">
+                                Powered  by <a href="https://www.neemkunibd.com/">Neemkuni Tech.</a>
+                            </div>
+                       </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script>
+    function Print() {
+        window.print();
+    }
+</script>

@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_PharmacyLayout.cshtml";
+}
+
+
+<script src="~/Scripts/Controller/Home.js"></script>
+
+
+<br />
+<div ng-app="myApp">
+    <div ng-controller="Home">
+
+        <div style="margin:1px; overflow: hidden;">
+            <h4><i class="icon-desktop">Summary</i></h4>
+            <div class="metro-nav">
+                <div class="metro-nav-block nav-block-orange double">
+                    <a data-original-title="" href="/Products/Index">
+                        <i class="icon-align-justify"></i>
+                        <div class="info">{{ProductList.length}}</div>
+                        <div class="status">Products</div>
+                    </a>
+                </div>
+                <div class="metro-nav-block nav-olive">
+                    <a data-original-title="" href="/Purchases/Index">
+                        <i class="icon-reply"></i>
+                        <div class="info">{{PurchaseList.length}}</div>
+                        <div class="status">Purchases</div>
+                    </a>
+                </div>
+                <div class="metro-nav-block nav-block-yellow double">
+                    <a data-original-title="" href="/Costs/Index">
+                        <i class="icon-money"></i>
+                        <div class="info">{{CostList.length}}</div>
+                        <div class="status">Costs</div>
+                    </a>
+                </div>
+                <div class="metro-nav-block nav-block-green">
+                    <a data-original-title="" href="/Sales/Index">
+                        <i class="icon-share-alt"></i>
+                        <div class="info">{{SaleList.length}}</div>
+                        <div class="status">Sales</div>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div style="margin:1px; text-align: center;">
+            <h2>Daily Cost and Profit</h2>
+            <div>
+                <input type="text" id="startDate" placeholder="Start Date" ng-model="StartDate" />
+                <input type="text" id="endDate" ng-model="EndDate" placeholder="End Date" />
+            </div>
+
+            <button class="btn btn-info" ng-disabled="" ng-click="GetDetails()">Load Details</button>
+        </div>
+
+        <div style="margin:1px; text-align: center; margin-top: 10px;">
+            <div>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td width="20%"></td>
+                            <td width="60%">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr ng-repeat="detail in DetailList">
+                                            <td style="font-size: 25px;">Medicine Cost: {{detail.MedicineCost}}</td>
+                                            <td style="font-size: 25px;">Others Cost: {{detail.OthersCost}}</td>
+                                            
+                                        </tr>
+                                        <tr ng-repeat="detail in DetailList">
+                                          
+                                            <td style="font-size: 25px;">Total Sale: {{detail.TotalSale}}</td>
+                                            <td style="font-size: 25px;">Total Profit: {{detail.TotalProfit}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td width="20%"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>

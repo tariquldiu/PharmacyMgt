@@ -1,0 +1,222 @@
+﻿@using PharmacyManagementSystem.Models;
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_PharmacyLayout.cshtml";
+}
+<script src="~/Scripts/Controller/Purchases.js"></script>
+
+@section style
+    {
+    <style>
+        label.error {
+            color: red;
+            font-style: italic;
+            display: inline;
+        }
+
+        .divIcon {
+            display: flex;
+            align-items: center;
+            position: relative;
+            display: inline;
+        }
+
+        .dtlistIcon {
+            position: absolute;
+            padding: 10px;
+            font-size: 11px;
+            min-width: 40px;
+            right: -32.5px;
+        }
+
+        /*input::-webkit-calendar-picker-indicator {
+            display: none;
+        }*/
+    </style>
+
+}
+<br />
+<div ng-app="myApp">
+    <div ng-controller="Purchases">
+        <div>
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green">
+                <div class="widget-title">
+                    <h4><i class="icon-reorder"></i>Add Purchase </h4>
+                    <span class="tools">
+                        <a href="javascript:;" class="icon-chevron-down"></a>
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <form name="PurchaseEntryForm">
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <select ng-model="ddlProduct" id="ProductId" name="ProductId" class="input-xlarge span12" ng-options="product.ProductName for product in ProductList track by product.ProductId" ng-change="GetProductInfo(ddlProduct); Purchase.ProductId = ddlProduct.ProductId; Purchase.ProductName = ddlProduct.ProductName;" title="Product" data-toggle="tooltip">
+                                            <option value="" label="Select Product" hidden></option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Purchase.GroupName" placeholder="Group Name" name="GroupName" id="GroupName" title="Group Name" data-toggle="tooltip" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Purchase.BrandName" placeholder="Brand Name" name="BrandName" id="BrandName" title="Brand Name" data-toggle="tooltip" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <select ng-model="ddlWarehouse" id="WarehouseId" name="WarehouseId" class="input-xlarge span12" ng-options="warehouse.WarehouseName for warehouse in WarehouseList track by warehouse.WarehouseId " ng-change="Purchase.WarehouseId = ddlWarehouse.WarehouseId; Purchase.WarehouseName = ddlWarehouse.WarehouseName" title="Warehouse" data-toggle="tooltip">
+                                            <option value="" label="Select Warehouse" hidden></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="number" min="0" class="input-block-level" ng-model="Purchase.UnitPrice" id="UnitPrice" placeholder="Unit Price" name="UnitPrice" title="Unit Price" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="number" min="0" class="input-block-level" ng-model="Purchase.Quantity" placeholder="Quantity" id="Quantity" name="Quantity" title="Quantity" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Purchase.Measurement" placeholder="Measurement" name="Measurement" id="Measurement" title="Measurement" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Purchase.Description" placeholder="Description" id="Description" name="Description" title="Description" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <select ng-model="ddlStock" id="StockId" name="StockId" class="input-xlarge span12" ng-options="stock.StockType for stock in StockList track by stock.StockId" ng-change="SetStoctType(ddlStock); Purchase.StockId = ddlStock.StockId; Purchase.StockType = ddlStock.StockType;" title="Stock" data-toggle="tooltip">
+                                            <option value="" label="Select Stock Type" hidden></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="date" class="input-block-level" ng-model="Purchase.PurchaseDate" id="PurchaseDate" name="PurchaseDate" title="Purchase Date" data-toggle="tooltip" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="date" class="input-block-level" ng-model="Purchase.ManufacturingDate" id="ManufacturingDate" name="ManufacturingDate" title="Manufacturing Date" data-toggle="tooltip" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="date" class="input-block-level" ng-model="Purchase.ExpireDate" id="ExpireDate" name="ExpireDate" title="Expire Date" data-toggle="tooltip" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+        <div>
+            <button class="btn btn-warning" ng-click="AddPurchase();" ng-disabled="!ddlProduct || !ddlStock || !Purchase.Measurement || !Purchase.WarehouseName || !Purchase.UnitPrice || !Purchase.Quantity || !Purchase.ManufacturingDate || !Purchase.PurchaseDate || !Purchase.ExpireDate"><i class="icon-plus icon-white"></i> {{btnAdd}} </button>
+            <button class="btn btn-info" ng-click="ResetForm();"><i class="icon-ban-circle icon-white"></i> Reset</button>
+            <button class="btn btn-default" ng-click="RedirectToList();"><i class="icon-list icon-white"></i> List</button>
+        </div>
+        <br />
+        <div>
+            <!-- BEGIN BASIC PORTLET-->
+            <div class="widget green">
+                <div class="widget-title">
+                    <h4><i class="icon-reorder"></i> Added Purchase</h4>
+
+                </div>
+                <div class="widget-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Measurement</th>
+                                <th>Brand</th>
+                                <th>Type</th>
+                                <th>Warehouse</th>
+                                <th>Expire Date</th>
+                                <th>Stock</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="purchase in PurchaseListTemp">
+                                <td>{{purchase.ProductName}}</td>
+                                <td>{{purchase.Measurement}}</td>
+                                <td>{{purchase.BrandName}}</td>
+                                <td>{{purchase.TypeName}}</td>
+                                <td>{{purchase.WarehouseName}}</td>
+                                <td>{{purchase.ExpireDate | date :  'MM/dd/yyyy'}}</td>
+                                <td>{{purchase.StockType}}</td>
+                                <td>{{purchase.UnitPrice}}</td>
+                                <td>{{purchase.Quantity}}</td>
+                                <td>{{purchase.Amount}}</td>
+                                <td>
+                                    <button class="btn btn-small btn-danger" type="button" ng-click="RemovePurchase(purchase);">Remove</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END BASIC PORTLET-->
+        </div>
+        <button class="btn btn-warning" ng-disabled="!PurchaseListTemp.length" ng-click="SavePurchase();"><i class="icon-save icon-white"></i> Submit</button>
+        <button class="btn btn-danger" ng-click="RedirectToList();"><i class="icon-remove icon-white"></i> Cancel</button>
+
+    </div>
+</div>
+
+<script>
+
+
+
+</script>

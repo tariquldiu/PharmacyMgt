@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_PharmacyLayout.cshtml";
+}
+<script src="~/Scripts/Controller/Sales.js"></script>
+@section style
+    {
+    <style>
+        label.error {
+            color: red;
+            font-style: italic;
+            display: inline;
+        }
+
+        .divIcon {
+            display: flex;
+            align-items: center;
+            position: relative;
+            display: inline;
+        }
+
+        .dtlistIcon {
+            position: absolute;
+            padding: 10px;
+            font-size: 11px;
+            min-width: 40px;
+            right: -32.5px;
+        }
+
+        /*input::-webkit-calendar-picker-indicator {
+            display: none;
+        }*/
+    </style>
+
+}
+<br />
+<div ng-app="myApp">
+    <div ng-controller="Sales">
+        <div>
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green">
+                <div class="widget-title">
+                    <h4><i class="icon-reorder"></i>  Add Sale </h4>
+                    <span class="tools">
+                        <a href="javascript:;" class="icon-chevron-down"></a>
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <form>
+                        <div class="row-fluid">
+
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="date" class="input-block-level" id="SaleDate" name="SaleDate" ng-model="Sale.SaleDate" title="Sale Date" data-toggle="tooltip" />
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <select ng-model="ddlPurchasedProduct" id="PurchaseId" name="PurchaseId" ng-disabled="!Sale.SaleDate" class="input-xlarge span12" ng-options="purchasedProduct.ProductName for purchasedProduct in PurchasedProductList track by purchasedProduct.PurchaseId" ng-change="GetBillNo(); SetPurchasedProduct(ddlPurchasedProduct); Sale.PurchaseId = ddlPurchasedProduct.PurchaseId; Sale.ProductName = ddlPurchasedProduct.ProductName;" title="Purchased Product" data-toggle="tooltip">
+                                            <option value="" label="Select Purchased Product" hidden></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Sale.IsStock" placeholder="Is Stock" name="IsStock" title="Is Stock" data-toggle="tooltip" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="number" class="input-block-level" ng-model="Sale.Quantity"  id="Quantity" ng-change="ChangeAmountForQty();" placeholder="Quantity" name="Quantity" title="Quantity" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                          
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="number" class="input-block-level" id="UnitPrice" ng-model="Sale.UnitPrice" ng-change="ChangeAmountForUnitPrice();" placeholder="Unit Price" name="UnitPrice" title="Unit Price" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="number" class="input-block-level" ng-model="Sale.Amount" placeholder="Amount" id="Amount" name="Amount" title="Amount" data-toggle="tooltip" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <select ng-model="ddlDiscountType" id="DiscountType" name="DiscountType" class="input-xlarge span12" ng-options="discountType.DiscountType for discountType in DiscountTypeList track by discountType.DiscountType" ng-change="Sale.DiscountType = ddlDiscountType.DiscountType; SetDiscountType(Sale.DiscountType);" title="Discount Type" data-toggle="tooltip">
+                                            <option value="" label="Select Discount Type" hidden></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Sale.Discount" ng-disabled="!ddlDiscountType" ng-change="SetDiscount();" placeholder="Discount" id="DiscountType" name="DiscountType" title="Discount" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Sale.BillNo" id="BillNo" name="BillNo" placeholder="Bill No" title="Bill No" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Sale.CustomerName" placeholder="Customer Name" id="CustomerName" name="CustomerName" title="Customer Name" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Sale.SaleFor" placeholder="Customer Address" id="SaleFor" name="SaleFor" title="Sale For" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <div class="controls controls-row">
+                                        <input type="text" class="input-block-level" ng-model="Sale.CustomerContact" placeholder="Customer Contact" id="CustomerContact" name="CustomerContact" title="Customer Contact" data-toggle="tooltip">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+        <div>
+            <button class="btn btn-warning" ng-disabled="!ddlDiscountType || !ddlPurchasedProduct || !Sale.SaleDate || !Sale.UnitPrice || !Sale.Quantity || !Sale.Amount || !Sale.Discount" ng-click="AddSale();"><i class="icon-plus icon-white"></i> {{btnAdd}}</button>
+            <button class="btn btn-info" ng-click="ResetForm();"><i class="icon-ban-circle icon-white"></i> Reset</button>
+            <button class="btn btn-default" ng-click="RedirectToList();"><i class="icon-list icon-white"></i> List</button>
+        </div>
+     
+       <br />
+        <div>
+            <!-- BEGIN BASIC PORTLET-->
+            <div class="widget green">
+                <div class="widget-title">
+                    <h4><i class="icon-reorder"></i> Added Sale</h4>
+
+                </div>
+                <div class="widget-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Bill No</th>
+                                <th>Sale Date</th>
+                                <th>Discount</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="sale in SaleListTemp">
+                                <td>{{sale.ProductName}}</td>
+                                <td>{{sale.BillNo}}</td>
+                                <td>{{sale.SaleDate | date :  'MM/dd/yyyy'}}</td>
+                                <td>{{sale.Discount}}</td>
+                                <td>{{sale.UnitPrice}}</td>
+                                <td>{{sale.Quantity}}</td>
+                                <td>{{sale.Amount}}</td>
+                                <td>
+                                    <button class="btn btn-small btn-danger" type="button" ng-click="RemoveSale(sale);">Remove</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END BASIC PORTLET-->
+        </div>
+        <button class="btn btn-warning" ng-disabled="!SaleListTemp.length" ng-click="SaveSale();"><i class="icon-save icon-white"></i> Submit</button>
+        <button class="btn btn-danger" ng-click="RedirectToList();"><i class="icon-remove icon-white"></i> Cancel</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+   
+</script>
